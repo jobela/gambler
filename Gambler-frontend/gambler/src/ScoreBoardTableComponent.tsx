@@ -29,7 +29,7 @@ export const ScoreBoardTableComponent = () => {
                 <th>Name</th>
                 <th>Score</th>
             </tr>
-            {scores && scores.map((s : any) => <TableRow name={s.name} score={s.score}/>)}            
+            {scores.map((s) => <tr><td>{s.name}</td><td>{s.score}</td></tr>)}            
         </table>
     );
 
@@ -46,12 +46,3 @@ interface IScore {
     score : number
 }
 
-
-const TableRow = ({name, score} : IScore) => {
-
-    return <tr>
-        <td>{name}</td>
-        <td>{score}</td>
-    </tr>;
-
-}
