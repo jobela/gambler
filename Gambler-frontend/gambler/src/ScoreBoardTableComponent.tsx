@@ -15,10 +15,10 @@ export const ScoreBoardTableComponent = () => {
 
     const fetchScores = () => {        
         let apiUrl = "https://gambler-api.codefellas.no/api/Gamblers/GetTop10";
-        axios.get<IApiData>(apiUrl).then((result => {
+        axios.get<IScore[]>(apiUrl).then((result => {
             // result comes here
-            console.log(result.data.success);
-            setScores(result.data.scores);
+            console.log(result.data);
+            setScores(result.data);
         })).catch((error) => {
             alert(error);
         })
