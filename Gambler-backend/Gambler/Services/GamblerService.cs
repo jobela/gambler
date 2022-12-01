@@ -6,28 +6,30 @@
 
     public interface IGamblerService
     {
-        Gambler Register(Gambler entity);
-        Response<GamblerDTO> Bet(int id, int value);
-        int Lottery(int id);
-
-        int Score(int id);
-        IEnumerable<Gambler> GetTop10Gamblers();
+        Gambler Register(string nickname);
+        Score Bet(Guid id, int value);
+        Score Lottery(Guid id);
+        Score Score(Guid id);
+        IEnumerable<Score> GetTop10Gamblers();
     }
 
     public class GamblerService : IGamblerService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly int _maxBetsPerDay = 500;
 
         public GamblerService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public Response<GamblerDTO> Bet(int id, int value)
+        public Score Bet(Guid id, int value)
         {
-            var response = new Response<GamblerDTO>();
+            var response = new Score();
 
-            var entity = _unitOfWork.Gamblers.Get(id);
+            var entity = _unitOfWork.Gamblers
+                .Find(g => g.UniquieIdentity == id)
+                .FirstOrDefault();
 
             if (entity == null)
                 throw new Exception("Unknown gambler");
@@ -35,37 +37,54 @@
             if (value > entity.Score)
                 throw new Exception("You cannot bet more than you have...");
 
+            if(entity.LatestBet.Date == DateTime.Now.Date && entity.NumberOfBets >= _maxBetsPerDay)
+                throw new Exception("You have reached your treshold for number of bets pr. day...");
+
             // Implement really smart algorithm with 50%-ish win chance unless betting cool numbers
             var factor = 1.0;
 
-            if (value == 69 || value == 420)
+            if (value == 69 || value == 420 || value == 666 || value == 1337 || value == 42069 || value == 69420)
                 factor = 1.2;
 
             if (Random.Shared.Next(0, 99) < (50 * factor))
             {
                 // Win
                 entity.Score += value;
-                response.Success = true;
+
+                response.Nickname = entity.Nickname;
+                response.Points = entity.Score;
                 response.Message = string.Format("Gambler won {0}!", value);
             }
             else
             {
                 // Loss
                 entity.Score -= value;
-                response.Success = true;
+
+                response.Nickname = entity.Nickname;
+                response.Points = entity.Score;
                 response.Message = string.Format("Gambler lost {0}!", value);
             }
 
-            _unitOfWork.Complete();
+            if(entity.LatestBet.Date != DateTime.Now.Date)
+                entity.NumberOfBets = 1;
+            else
+                entity.NumberOfBets += 1;
 
-            response.Entity = new GamblerDTO() { Username = entity.Username, Score = entity.Score };
+            entity.LatestBet = DateTime.Now;
+            entity.Highscore = entity.Score > entity.Highscore ? entity.Score : entity.Highscore;
+
+            _unitOfWork.Complete();
 
             return response;
         }
 
-        public int Lottery(int id)
+        public Score Lottery(Guid id)
         {
-            var entity = _unitOfWork.Gamblers.Get(id);
+            var response = new Score();
+            
+            var entity = _unitOfWork.Gamblers
+                .Find(g => g.UniquieIdentity == id)
+                .FirstOrDefault();
 
             if (entity == null)
                 throw new Exception("Unknown gambler");
@@ -74,23 +93,46 @@
             if (Random.Shared.Next(0, 10000) <= 10)
             {
                 // Win
-                entity.Score += 1000000;
+                entity.Score += 100000;
+
+                response.Nickname = entity.Nickname;
+                response.Points = entity.Score;
+                response.Message = string.Format("Gambler won the lottery!");
+
+            }
+            else
+            {
+                // Loose
+                entity.Score -= 100;
+
+                response.Nickname = entity.Nickname;
+                response.Points = entity.Score;
+                response.Message = string.Format("Sorry, no lottery for you! We took 100 points from your account");
             }
 
             _unitOfWork.Complete();
 
-            return entity.Score;
+            return response;
         }
 
-        public IEnumerable<Gambler> GetTop10Gamblers()
+        public IEnumerable<Score> GetTop10Gamblers()
         {
-            return _unitOfWork.Gamblers.GetTop10Gamblers();
+            return _unitOfWork.Gamblers.GetTop10Gamblers()
+                .Select(g => new Score() 
+                {   Nickname = g.Nickname, 
+                    Points = g.Score 
+                });
         }
 
-        public Gambler Register(Gambler entity)
+        public Gambler Register(string nickname)
         {
+            var entity = new Gambler();
+
+            entity.Nickname = nickname;
+            
             // default values
             entity.Score = 1000;
+            entity.Created = DateTime.Now;
 
             _unitOfWork.Gamblers.Add(entity);
             _unitOfWork.Complete();
@@ -98,14 +140,23 @@
             return entity;
         }
 
-        public int Score(int id)
+        public Score Score(Guid id)
         {
-            var entity = _unitOfWork.Gamblers.Get(id);
+            var entity = _unitOfWork.Gamblers
+                .Find(g => g.UniquieIdentity == id)
+                .FirstOrDefault();
 
             if (entity == null)
                 throw new Exception("Unknown gambler");
 
-            return entity.Score;
+            var response = new Score()
+            {
+                Nickname = entity.Nickname,
+                Points = entity.Score,
+                Message = "Current score for user"
+            };
+
+            return response;
         }
     }
 }

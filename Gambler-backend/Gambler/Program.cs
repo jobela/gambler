@@ -12,22 +12,30 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options => 
-    options.UseSqlServer("Server=.\\SQLExpress;Database=GamblerDb;Trusted_Connection=True;TrustServerCertificate=True;"));
+    options.UseSqlServer("Server=.\\SQLExpress;Database=GamblerDb;Trusted_Connection=true;;TrustServerCertificate=True"));
 
 //builder.Services.AddScoped<ISuperHeroRepository, SuperHeroRepository>();
 builder.Services.AddScoped<IGamblerService, GamblerService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("MyAllowAllCORSPolicy", builder =>
+        {
+            builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        });
+    });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
-app.UseMiddleware<ApiKeyMiddleware>();
+// Nah, don't use it!
+//app.UseMiddleware<ApiKeyMiddleware>();
+
+app.UseCors("MyAllowAllCORSPolicy");
 
 app.UseHttpsRedirection();
 

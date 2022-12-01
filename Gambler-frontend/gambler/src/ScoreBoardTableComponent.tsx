@@ -9,14 +9,15 @@ export const ScoreBoardTableComponent = () => {
         fetchScores();
         const interval = setInterval(()=>{
             fetchScores();
-        }, 1000);
+        }, 10000);
         return () => clearInterval(interval);
     },[]);
 
     const fetchScores = () => {        
-        let apiUrl = "https://example.com/url/url";
+        let apiUrl = "https://gambler-api.codefellas.no/api/Gamblers/GetTop10";
         axios.get<IApiData>(apiUrl).then((result => {
             // result comes here
+            console.log(result.data.success);
             setScores(result.data.scores);
         })).catch((error) => {
             alert(error);
@@ -25,11 +26,15 @@ export const ScoreBoardTableComponent = () => {
 
     return (
         <table id="scorers">
-            <tr>
-                <th>Name</th>
-                <th>Score</th>
-            </tr>
-            {scores.map((s) => <tr><td>{s.name}</td><td>{s.score}</td></tr>)}            
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+                <tbody>
+                    {scores?.map((s) => <tr><td>{s.nickname}</td><td>{s.points}</td></tr>)}            
+                </tbody>
         </table>
     );
 
@@ -42,7 +47,8 @@ interface IApiData {
 }
 
 interface IScore {
-    name : string,
-    score : number
+    nickname : string,
+    points : number,
+    message : string,
 }
 

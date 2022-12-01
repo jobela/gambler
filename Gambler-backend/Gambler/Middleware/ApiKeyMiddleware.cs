@@ -39,21 +39,21 @@
             {
                 if (!context.Request.Headers.TryGetValue(APIKEYNAME, out var extractedApiKey))
                 {
-                    //context.Response.StatusCode = 401;
-                    //await context.Response.WriteAsync("Api Key was not provided. (Using ApiKeyMiddleware) ");
+                    context.Response.StatusCode = 401;
+                    await context.Response.WriteAsync("Api Key was not provided. (Using ApiKeyMiddleware) ");
                     _logger.LogWarning("Api Key was not provided.");
-                    //return;
+                    return;
                 }
                 var appSettings = context.RequestServices.GetRequiredService<IConfiguration>();
                 var apiKey = appSettings.GetValue<string>(APIKEYNAME);
 
                 if (apiKey.IsNullOrEmpty() || !apiKey.Equals(extractedApiKey))
                 {
-                    //context.Response.StatusCode = 401;
-                    //await context.Response.WriteAsync("Unauthorized client. (Using ApiKeyMiddleware)");
+                    context.Response.StatusCode = 401;
+                    await context.Response.WriteAsync("Unauthorized client. (Using ApiKeyMiddleware)");
 
                     _logger.LogWarning("Unauthorized client.");
-                    //return;
+                    return;
                 }
 
             }

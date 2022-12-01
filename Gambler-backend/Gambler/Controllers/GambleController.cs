@@ -17,17 +17,22 @@
             _logger = logger;
         }
 
+        // You bet'cha
         [HttpPost("Bet")]
-        public async Task<ActionResult<Response<GamblerDTO>>> Bet(int id, int value)
+        public async Task<ActionResult<Score>> Bet(Guid id, int value)
         {
-            var dto = _service.Bet(id, value);
-            return Ok(dto);
+            var score = _service.Bet(id, value);
+            
+            return Ok(score);
         }
 
+        // Now no one can use the lottery function! 1337 haXx0r
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost("Lottery")]
-        public async Task<ActionResult<int>> Lottery(int id)
+        public async Task<ActionResult<Score>> Lottery(Guid id)
         {
             var score = _service.Lottery(id);
+
             return Ok(score);
         }
     }

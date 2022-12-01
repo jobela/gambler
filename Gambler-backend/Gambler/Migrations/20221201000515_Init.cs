@@ -18,8 +18,12 @@ namespace Gambler.PoC.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UniquieIdentity = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Score = table.Column<int>(type: "int", nullable: false)
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Nickname = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Score = table.Column<int>(type: "int", nullable: false),
+                    Highscore = table.Column<int>(type: "int", nullable: false),
+                    NumberOfBets = table.Column<int>(type: "int", nullable: false),
+                    LatestBet = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
