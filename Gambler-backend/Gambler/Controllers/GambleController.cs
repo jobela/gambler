@@ -21,9 +21,15 @@
         [HttpPost("Bet")]
         public async Task<ActionResult<Score>> Bet(Guid id, int value)
         {
-            var score = _service.Bet(id, value);
-            
-            return Ok(score);
+            try
+            {
+                var score = _service.Bet(id, value);
+                return Ok(score);
+            } 
+            catch (ThrottlingException texmex)
+            {
+                return StatusCode(429, texmex.Message);
+            }
         }
 
         // Now no one can use the lottery function! 1337 haXx0r

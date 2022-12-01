@@ -3,6 +3,7 @@
     using Gambler.PoC.Data;
     using Gambler.PoC.Business.Entities;
     using Gambler.PoC.Models;
+    using System.Web.Http;
 
     public interface IGamblerService
     {
@@ -32,13 +33,13 @@
                 .FirstOrDefault();
 
             if (entity == null)
-                throw new Exception("Unknown gambler");
+                throw new BadHttpRequestException("Unknown gambler");
 
             if (value > entity.Score)
-                throw new Exception("You cannot bet more than you have...");
+                throw new BadHttpRequestException("You cannot bet more than you have...");
 
             if(entity.LatestBet.Date == DateTime.Now.Date && entity.NumberOfBets >= _maxBetsPerDay)
-                throw new Exception("You have reached your treshold for number of bets pr. day...");
+                throw new ThrottlingException("You have reached your treshold for number of bets pr. day...");
 
             // Implement really smart algorithm with 50%-ish win chance unless betting cool numbers
             var factor = 1.0;
