@@ -43,10 +43,10 @@
             // Implement really smart algorithm with 50%-ish win chance unless betting cool numbers
             var factor = 1.0;
 
-            if (value == 69 || value == 420 || value == 666 || value == 1337 || value == 42069 || value == 69420)
-                factor = 1.2;
+            if (value == 69 || value == 420 || value == 666 || value == 1337)
+                factor = 1.1;
 
-            if (Random.Shared.Next(0, 99) < (50 * factor))
+            if (Random.Shared.Next(1, 100) < (51 * factor))
             {
                 // Win
                 entity.Score += value;
@@ -72,6 +72,12 @@
 
             entity.LatestBet = DateTime.Now;
             entity.Highscore = entity.Score > entity.Highscore ? entity.Score : entity.Highscore;
+
+            if(entity.Score < 100)
+            { 
+                entity.Score = 100;
+                response.Message = response.Message + " Value reset to 100!";
+            }
 
             _unitOfWork.Complete();
 
