@@ -30,7 +30,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// Nah, don't use it! We use decurity through obscurity
+// Nah, don't use it! We use security through obscurity
 //app.UseMiddleware<ApiKeyMiddleware>();
 
 app.UseCors("MyAllowAllCORSPolicy");
