@@ -35,6 +35,9 @@
             if (entity == null)
                 throw new BadHttpRequestException("Unknown gambler");
 
+            if (value < 0)
+                throw new BadHttpRequestException("You cannot bet a negative number...");
+
             if (value > entity.Score)
                 throw new BadHttpRequestException("You cannot bet more than you have...");
 
