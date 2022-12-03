@@ -130,7 +130,10 @@
             return _unitOfWork.Gamblers.GetTop10Gamblers()
                 .Select(g => new Score() 
                 {   Nickname = g.Nickname, 
-                    Points = g.Score 
+                    Points = g.Score,
+                    Highscore = g.Highscore,
+                    LatestBet = g.LatestBet,
+                    NumberOfBets = g.NumberOfBets,
                 });
         }
 
