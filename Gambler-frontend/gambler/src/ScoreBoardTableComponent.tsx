@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import internal from "stream";
 
 export const ScoreBoardTableComponent = () => {
 
@@ -9,7 +10,7 @@ export const ScoreBoardTableComponent = () => {
         fetchScores();
         const interval = setInterval(()=>{
             fetchScores();
-        }, 10000);
+        }, 15000);
         return () => clearInterval(interval);
     },[]);
 
@@ -17,7 +18,7 @@ export const ScoreBoardTableComponent = () => {
         let apiUrl = "https://gambler-api.codefellas.no/api/Gamblers/GetTop10";
         axios.get<IScore[]>(apiUrl).then((result => {
             // result comes here
-            console.log(result.data);
+            //console.log(result.data);
             setScores(result.data);
         })).catch((error) => {
             alert(error);
@@ -30,10 +31,12 @@ export const ScoreBoardTableComponent = () => {
                 <tr>
                     <th>Name</th>
                     <th>Score</th>
+                    <th>Highscore</th>
+                    <th>Bets today</th>
                 </tr>
             </thead>
                 <tbody>
-                    {scores?.map((s) => <tr><td>{s.nickname}</td><td>{s.points}</td></tr>)}            
+                    {scores?.map((s) => <tr><td>{s.nickname}</td><td>{s.points}</td><td>{s.highscore}</td><td>{s.numberOfBets}</td></tr>)}            
                 </tbody>
         </table>
     );
@@ -50,5 +53,8 @@ interface IScore {
     nickname : string,
     points : number,
     message : string,
+    latestBet : Date,
+    highscore : number,
+    numberOfBets : number
 }
 
