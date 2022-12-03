@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<DataContext>(options => 
+builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer("Server=.\\SQLExpress;Database=GamblerDb;User Id=sa;Password=letmein;TrustServerCertificate=True"));
 
 builder.Services.AddScoped<IGamblerService, GamblerService>();
@@ -27,12 +27,14 @@ builder.Services.AddCors(options =>
 // Bob The Builder can you fix it!
 var app = builder.Build();
 
+// Well all love swag!
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// Nah, don't use it! We use decurity through obscurity
+// Nah, don't use it! We use security through obscurity
 //app.UseMiddleware<ApiKeyMiddleware>();
 
+// Bestest policy ever
 app.UseCors("MyAllowAllCORSPolicy");
 
 app.UseHttpsRedirection();
