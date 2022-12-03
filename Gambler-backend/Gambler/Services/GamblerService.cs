@@ -69,17 +69,22 @@
                 response.Message = string.Format("Gambler lost {0}!", value);
             }
 
+            // Reset counter if new date
             if(entity.LatestBet.Date != DateTime.Now.Date)
                 entity.NumberOfBets = 1;
             else
                 entity.NumberOfBets += 1;
 
             entity.LatestBet = DateTime.Now;
+
+            // Update highscore
             entity.Highscore = entity.Score > entity.Highscore ? entity.Score : entity.Highscore;
 
+            // If you are terrible at betting we will always help you out
             if(entity.Score < 100)
             { 
                 entity.Score = 100;
+                //response.Points = entity.Score;
                 response.Message = response.Message + " Value reset to 100!";
             }
 
@@ -133,7 +138,7 @@
                     Points = g.Score,
                     Highscore = g.Highscore,
                     LatestBet = g.LatestBet,
-                    NumberOfBets = g.NumberOfBets,
+                    NumberOfBets = g.LatestBet.Date == DateTime.Now.Date? g.NumberOfBets : 0,
                 });
         }
 
