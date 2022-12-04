@@ -22,7 +22,6 @@
             _logger = logger;
         }
 
-        //[DisableCors]
         [HttpGet("GetTop10")]
         public async Task<ActionResult<IEnumerable<Score>>> GetTopList()
         {
@@ -40,7 +39,7 @@
 
             var gambler = _service.Register(nickname);
 
-            return Ok(string.Format("Congratulations, your gambler account has been registred. Your unique identity is {0}. Use it while placing bets. You start of with {1} points to gamble with. Make them count!", gambler.UniquieIdentity, gambler.Score));
+            return Ok(string.Format($"Congratulations, your gambler account has been registred. Your unique identity is {gambler.UniquieIdentity}. Use it while placing bets. You start of with {gambler.Score} points to gamble with. Make them count!"));
         }
 
         [HttpGet("Score")]

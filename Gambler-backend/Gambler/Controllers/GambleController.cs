@@ -3,6 +3,7 @@
     using Gambler.PoC.Models;
     using Gambler.PoC.Services;
     using Microsoft.AspNetCore.Mvc;
+    using Newtonsoft.Json.Linq;
 
     [Route("api/[controller]")]
     [ApiController]
@@ -21,11 +22,17 @@
         [HttpPost("Bet")]
         public async Task<ActionResult<Score>> Bet(Guid id, int value)
         {
+            _logger.LogInformation(string.Format($"{id} made a bet for {value}"));
+
             try
             {
                 var score = _service.Bet(id, value);
                 return Ok(score);
-            } 
+            }
+            catch (BadHttpRequestException bex)
+            {
+                return StatusCode(400, bex.Message);
+            }
             catch (ThrottlingException texmex)
             {
                 return StatusCode(429, texmex.Message);
@@ -37,6 +44,8 @@
         [HttpPost("Lottery")]
         public async Task<ActionResult<Score>> Lottery(Guid id)
         {
+            _logger.LogInformation(string.Format($"{id} played the lottery"));
+
             var score = _service.Lottery(id);
 
             return Ok(score);
