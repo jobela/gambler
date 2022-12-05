@@ -21,7 +21,7 @@ export const ScoreBoardTableComponent = () => {
             //console.log(result.data);
             setScores(result.data);
         })).catch((error) => {
-            alert(error);
+            console.log(error);
         })
     }
 
