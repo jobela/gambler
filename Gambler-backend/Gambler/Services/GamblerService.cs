@@ -54,18 +54,12 @@
             {
                 // Win
                 entity.Score += value;
-
-                response.Nickname = entity.Nickname;
-                response.Points = entity.Score;
                 response.Message = string.Format("Gambler won {0}!", value);
             }
             else
             {
                 // Loss
                 entity.Score -= value;
-
-                response.Nickname = entity.Nickname;
-                response.Points = entity.Score;
                 response.Message = string.Format("Gambler lost {0}!", value);
             }
 
@@ -80,11 +74,18 @@
             // Update highscore
             entity.Highscore = entity.Score > entity.Highscore ? entity.Score : entity.Highscore;
 
+            // Set the reponse
+            response.Nickname = entity.Nickname;
+            response.Points = entity.Score;
+            response.NumberOfBets = entity.NumberOfBets;
+            response.LatestBet = entity.LatestBet;
+            response.Highscore = entity.Highscore;
+
             // If you are terrible at betting we will always help you out
-            if(entity.Score < 100)
+            if (entity.Score < 100)
             { 
                 entity.Score = 100;
-                //response.Points = entity.Score;
+                response.Points = entity.Score;
                 response.Message = response.Message + " Value reset to 100!";
             }
 
@@ -109,9 +110,6 @@
             {
                 // Win
                 entity.Score += 100000;
-
-                response.Nickname = entity.Nickname;
-                response.Points = entity.Score;
                 response.Message = string.Format("Gambler won the lottery!");
 
             }
@@ -119,11 +117,11 @@
             {
                 // Loose
                 entity.Score -= 100;
-
-                response.Nickname = entity.Nickname;
-                response.Points = entity.Score;
                 response.Message = string.Format("Sorry, no lottery for you! We took 100 points from your account");
             }
+
+            response.Nickname = entity.Nickname;
+            response.Points = entity.Score;
 
             _unitOfWork.Complete();
 
@@ -165,12 +163,15 @@
                 .FirstOrDefault();
 
             if (entity == null)
-                throw new Exception("Unknown gambler");
+                throw new BadHttpRequestException("Unknown gambler");
 
             var response = new Score()
             {
                 Nickname = entity.Nickname,
                 Points = entity.Score,
+                Highscore = entity.Highscore,
+                LatestBet = entity.LatestBet,
+                NumberOfBets = entity.NumberOfBets,
                 Message = "Current score for user"
             };
 

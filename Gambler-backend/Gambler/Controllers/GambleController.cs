@@ -46,9 +46,15 @@
         {
             _logger.LogInformation(string.Format($"{id} played the lottery"));
 
-            var score = _service.Lottery(id);
-
-            return Ok(score);
+            try
+            {
+                var score = _service.Lottery(id);
+                return Ok(score);
+            }
+            catch (BadHttpRequestException bex)
+            {
+                return StatusCode(400, bex.Message);
+            }
         }
     }
 }
