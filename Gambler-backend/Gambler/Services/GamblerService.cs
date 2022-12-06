@@ -171,7 +171,7 @@
                 Points = entity.Score,
                 Highscore = entity.Highscore,
                 LatestBet = entity.LatestBet,
-                NumberOfBets = entity.NumberOfBets,
+                NumberOfBets = entity.LatestBet.Date == DateTime.Now.Date ? entity.NumberOfBets : 0,
                 Message = "Current score for user"
             };
 
