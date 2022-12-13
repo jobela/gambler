@@ -6,7 +6,7 @@
 
     public interface IGamblerRepository : IRepository<Gambler>
     {
-        IEnumerable<Gambler> GetTop10Gamblers();
+        IEnumerable<Gambler> GetTopGamblers();
     }
 
     public class GamblerRepository : Repository<Gambler>, IGamblerRepository
@@ -15,10 +15,10 @@
 
         public DataContext DataContext { get { return Context as DataContext; } }
 
-        public IEnumerable<Gambler> GetTop10Gamblers()
+        public IEnumerable<Gambler> GetTopGamblers()
         {
             return DataContext.Gamblers
-                .Take(10)
+                .Take(25)
                 .OrderByDescending(g => g.Score);
         }
     }

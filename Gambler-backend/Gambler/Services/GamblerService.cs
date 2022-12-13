@@ -11,7 +11,7 @@
         Score Bet(Guid id, int value);
         Score Lottery(Guid id);
         Score Score(Guid id);
-        IEnumerable<Score> GetTop10Gamblers();
+        IEnumerable<Score> GetTopGamblers();
     }
 
     public class GamblerService : IGamblerService
@@ -128,9 +128,9 @@
             return response;
         }
 
-        public IEnumerable<Score> GetTop10Gamblers()
+        public IEnumerable<Score> GetTopGamblers()
         {
-            return _unitOfWork.Gamblers.GetTop10Gamblers()
+            return _unitOfWork.Gamblers.GetTopGamblers()
                 .Select(g => new Score() 
                 {   Nickname = g.Nickname, 
                     Points = g.Score,

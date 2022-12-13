@@ -25,7 +25,7 @@
         [HttpGet("GetTop10")]
         public async Task<ActionResult<IEnumerable<Score>>> GetTopList()
         {
-            var toplist = _service.GetTop10Gamblers();
+            var toplist = _service.GetTopGamblers();
 
             return Ok(toplist);
         }
