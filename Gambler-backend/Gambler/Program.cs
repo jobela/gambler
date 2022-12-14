@@ -2,6 +2,7 @@ using Gambler.PoC.Data;
 using Gambler.PoC.Middleware;
 using Gambler.PoC.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer("Server=.\\SQLExpress;Database=GamblerDb;User Id=sa;Password=letmein;TrustServerCertificate=True"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("GamblerDB")));
 
 builder.Services.AddScoped<IGamblerService, GamblerService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
